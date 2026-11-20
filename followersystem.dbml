@@ -1,0 +1,107 @@
+// Use DBML to define your database structure
+// Docs: https://dbml.dbdiagram.io/docs
+
+Table follows {
+  following_user_id integer [not null]
+  followed_user_id integer [not null]
+  created_at timestamp
+}
+
+Table users {
+  id integer [primary key]
+  username varchar
+  role varchar
+  created_at timestamp
+  bio varchar(400)
+  avatar varcahr(200)
+  phone varchar(10)
+  email varchar(50)
+  password varchar(20)
+  status varchar(15)
+  verifed varchar(250)
+}
+
+Table posts {
+  id integer [primary key]
+  title varchar
+  body text [note: 'Content of the post']
+  user_id integer [not null]
+  status varchar
+  created_at timestamp
+  caption varchar(240)
+  lat real
+  lng real 
+}
+table comments{
+  id serail [pk, increment]
+  created_at timestamp
+  updated_at timestamp
+  contents varchar(240)
+  user_id integer [ref: > users.id]
+  post_id integer [ref: > posts.id]
+}
+table likes{
+  id serial [pk, increment]
+  created_at timestamp
+  comment_id integer [ref: > comments.id]
+  user_id integer [ref: > users.id]
+  post_id integer [ ref: > posts.id]
+}
+table photo_tags{
+  id serial [primary key,increment]
+  created_at timestamp
+  updated_at timestamp
+
+  user_id integer [ref:> users.id]
+  post_id integer [ref: > posts.id]
+  x integer
+  y integer
+}
+table caption_tags{
+  id serial [primary key,increment]
+  created_at timestamp
+  user_id integer [ref: > users.id]
+  post_id integer [ref : > posts.id]
+}
+
+table hashtags{
+  id serial [pk, increment]
+  created_at timestamp
+  title varchar(20)
+}
+table hashtags_post{
+  id serail [pk,increment]
+  hashtag_id integer [ref: > hashtags.id]
+  post_id integer [ref: > posts.id]
+}
+
+table followers{
+  id serial [pk,increment]
+  created_at timestamp
+  leader_id integer [ref: > users.id ]
+  follower_id integer [ref: > users.id]
+}
+
+Ref user_posts: posts.user_id ?> users.id // many-to-one
+
+Ref: users.id <? follows.following_user_id
+
+Ref: users.id <? follows.followed_user_id
+
+Records users(id, username, role) {
+  0, 'Alice', 'admin'
+  1, 'Bob', 'moderator'
+  2, 'Candice', 'moderator'
+  3, 'David', 'member'
+}
+
+Records follows(following_user_id, followed_user_id, created_at) {
+  1, 0, '2026-01-01'
+  3, 2, '2026-02-28'
+}
+
+Records posts(id, title, user_id) {
+  0, 'Welcome to the forum!', 0
+  1, 'Guidelines', 1
+  2, 'Hello all!', 3
+}
